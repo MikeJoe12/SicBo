@@ -428,8 +428,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const chipBadge = document.getElementById('chip_' + key);
       if (chipBadge) {
-        const pName = currentPlayer ? (currentPlayer.display_name || currentPlayer.username) : 'YOU';
-        chipBadge.innerHTML = '<span class="touch-chip-name">' + pName + '</span> ' + SicBoCommon.formatCredits(aggregated[key]);
+        chipBadge.textContent = SicBoCommon.formatCredits(aggregated[key]);
         chipBadge.classList.add('active');
       }
     });
