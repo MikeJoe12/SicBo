@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sic Bo - Player Login</title>
+  <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+
+  <div class="auth-container">
+    <div class="auth-header">
+      <div class="auth-title">SIC BO</div>
+      <div class="auth-subtitle">Live Multiplayer Betting Terminal</div>
+    </div>
+
+    <div class="bonus-pill">
+      🎁 1,000 Free Virtual Credits On Arrival
+    </div>
+
+    <div class="error-msg" id="authErrorBox"></div>
+
+    <!-- Quick Player Login Form (Name Only) -->
+    <form id="playerLoginForm">
+      <div class="form-group">
+        <label class="form-label" for="playerNameInput">Enter Your Name</label>
+        <input class="form-input" type="text" id="playerNameInput" placeholder="e.g. Mike, Sarah, David" required autofocus autocomplete="name" style="font-size: 18px; padding: 14px; text-align: center;">
+      </div>
+      <button class="submit-btn" type="submit" style="font-size: 18px; padding: 14px;">ENTER TABLE & PLAY</button>
+    </form>
+
+    <!-- Admin Access Toggle Link -->
+    <div style="text-align: center; margin-top: 24px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.1);">
+      <button id="toggleAdminBtn" type="button" style="background: none; border: none; color: #8fa899; font-size: 12px; cursor: pointer; text-decoration: underline;">
+        Administrator Access
+      </button>
+    </div>
+
+    <!-- Admin Form (Hidden by default) -->
+    <form id="adminLoginForm" style="display: none; margin-top: 16px;">
+      <div style="font-size: 13px; font-weight: 700; color: #e5b33d; margin-bottom: 10px; text-align: center;">Admin Login</div>
+      <div class="form-group">
+        <label class="form-label" for="adminUsername">Username</label>
+        <input class="form-input" type="text" id="adminUsername" value="admin" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="adminPassword">Password</label>
+        <input class="form-input" type="password" id="adminPassword" placeholder="Admin password" required>
+      </div>
+      <button class="submit-btn" type="submit" style="background: #21262d; border: 1px solid #30363d;">LOGIN AS ADMIN</button>
+    </form>
+  </div>
+
+  <script src="/js/auth.js"></script>
+</body>
+</html>

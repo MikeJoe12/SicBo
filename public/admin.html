@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sic Bo - Administration Portal</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+  <!-- Admin Navbar -->
+  <nav class="admin-navbar">
+    <div class="admin-brand">SIC BO ADMIN</div>
+    <div class="admin-nav-links">
+      <button class="nav-tab-btn active" data-tab="overviewTab">Control & Overview</button>
+      <button class="nav-tab-btn" data-tab="playersTab">Players</button>
+      <button class="nav-tab-btn" data-tab="roundsTab">Rounds</button>
+      <button class="nav-tab-btn" data-tab="ledgerTab">Transaction Ledger</button>
+      <button class="admin-btn secondary" id="adminLogoutBtn">Logout</button>
+    </div>
+  </nav>
+
+  <!-- Admin Main Workspace -->
+  <main class="admin-main">
+
+    <!-- Tab 1: Control & Overview -->
+    <section class="tab-pane active" id="overviewTab">
+      
+      <!-- Game Loop Controls -->
+      <div class="admin-card">
+        <div class="card-title">Dealer Game Controls (Manual Round Flow)</div>
+        <div class="control-btn-group">
+          <button class="admin-btn danger" id="adminStopBettingBtn">🛑 Stop Betting</button>
+          <button class="admin-btn warning" id="adminRollDiceBtn" style="background: linear-gradient(180deg, #f39c12, #d35400); color: #fff;">🎲 Roll 3 Dice</button>
+          <button class="admin-btn primary" id="adminNewRoundBtn">🔄 Open New Round</button>
+        </div>
+      </div>
+
+      <!-- Live State Monitor -->
+      <div class="admin-card">
+        <div class="card-title">Live Engine State</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+          <div>
+            <div style="color: #8b949e; font-size: 12px;">ACTIVE ROUND</div>
+            <div style="font-size: 24px; font-weight: 800; color: #fff;" id="adminRoundId">--</div>
+          </div>
+          <div>
+            <div style="color: #8b949e; font-size: 12px;">ROUND STATE</div>
+            <div style="font-size: 24px; font-weight: 800; color: var(--admin-gold);" id="adminRoundState">--</div>
+          </div>
+          <div>
+            <div style="color: #8b949e; font-size: 12px;">PAUSE STATUS</div>
+            <div style="font-size: 24px; font-weight: 800;" id="adminPauseStatus">RUNNING</div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Tab 2: Players Management -->
+    <section class="tab-pane" id="playersTab">
+      
+      <!-- Create Player Card -->
+      <div class="admin-card">
+        <div class="card-title">Create New Player Account</div>
+        <form class="inline-form" id="createPlayerForm">
+          <input class="admin-input" type="text" id="newUsername" placeholder="Username" required>
+          <input class="admin-input" type="text" id="newDisplayName" placeholder="Display Name" required>
+          <input class="admin-input" type="password" id="newPassword" placeholder="Password" required>
+          <input class="admin-input" type="number" id="newCredits" placeholder="Credits (default 1000)" value="1000" style="width: 120px;">
+          <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;">
+            <input type="checkbox" id="newIsAdmin"> Admin Account
+          </label>
+          <button class="admin-btn primary" type="submit">Create Player</button>
+        </form>
+      </div>
+
+      <!-- Players List -->
+      <div class="admin-card">
+        <div class="card-title">Currently Logged In Players (Active Sessions)</div>
+        <div class="admin-table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Display Name</th>
+                <th>Credits</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="playersTableBody">
+              <!-- Loaded via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Tab 3: Rounds History -->
+    <section class="tab-pane" id="roundsTab">
+      <div class="admin-card">
+        <div class="card-title">Settled Rounds History</div>
+        <div class="admin-table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Round ID</th>
+                <th>Dice</th>
+                <th>Total</th>
+                <th>Outcome</th>
+                <th>Settled At</th>
+              </tr>
+            </thead>
+            <tbody id="roundsTableBody">
+              <!-- Loaded via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 4: Transaction Ledger -->
+    <section class="tab-pane" id="ledgerTab">
+      <div class="admin-card">
+        <div class="card-title">Audit Ledger (Transaction History)</div>
+        <div class="admin-table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Txn ID</th>
+                <th>Player</th>
+                <th>Round</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Balance Before</th>
+                <th>Balance After</th>
+                <th>Audit Reference</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="ledgerTableBody">
+              <!-- Loaded via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Credit Adjustment Modal -->
+  <div class="admin-modal-backdrop" id="creditModalBackdrop">
+    <div class="admin-modal-card">
+      <div class="card-title">Adjust Player Credits</div>
+      <form id="creditAdjustForm">
+        <input type="hidden" id="adjustPlayerId">
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 12px; color: #8b949e;">Target Player</label>
+          <div id="adjustPlayerName" style="font-weight: 700; color: #fff;">--</div>
+        </div>
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 12px; color: #8b949e;">Adjustment Amount (positive to credit, negative to debit)</label>
+          <input class="admin-input" type="number" id="adjustAmount" placeholder="+500 or -200" required style="width: 100%;">
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label style="font-size: 12px; color: #8b949e;">Mandatory Audit Reason</label>
+          <input class="admin-input" type="text" id="adjustReason" placeholder="e.g. Promotional grant, Support resolution" required style="width: 100%;">
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+          <button class="admin-btn secondary" type="button" id="closeCreditModalBtn">Cancel</button>
+          <button class="admin-btn primary" type="submit">Confirm Adjustment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

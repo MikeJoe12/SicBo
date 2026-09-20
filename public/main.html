@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sic Bo - Shared Table</title>
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+  <!-- Top Navigation & Dealer Control HUD -->
+  <header class="table-header">
+    <div class="brand-section">
+      <div class="brand-title">SIC BO</div>
+      <div class="round-pill" id="roundDisplay">Round #--</div>
+      <div class="phase-badge" id="phaseBadge">BETTING OPEN</div>
+    </div>
+
+    <!-- Direct Dealer Controls on Table Display -->
+    <div class="dealer-controls-bar">
+      <button class="dealer-btn btn-stop-betting" id="dealerStopBettingBtn" title="Close betting window">
+        🛑 Stop Betting
+      </button>
+      <button class="dealer-btn btn-roll-dice" id="dealerRollDiceBtn" title="Roll the 3 dice and settle">
+        🎲 Roll Dice
+      </button>
+      <button class="dealer-btn btn-new-round" id="dealerNewRoundBtn" title="Open next betting round">
+        🔄 New Round
+      </button>
+    </div>
+
+    <div class="header-controls">
+      <button class="icon-btn" id="audioToggleBtn" title="Toggle Sound">🔊</button>
+    </div>
+  </header>
+
+  <!-- Table Body Container -->
+  <main class="table-main-container">
+    
+    <div class="board-wrapper">
+
+      <!-- Authentic Casino Sic Bo Felt Board (Matching SICBO.jpg) -->
+      <section class="sicbo-felt-board" id="feltBoard">
+
+        <!-- Row 1: SMALL / 3 BIG DICES ON THE BOARD / BIG -->
+        <div class="board-row-top">
+          
+          <!-- Arched SMALL (Left) -->
+          <div class="bet-cell cell-small" data-bet-key="small">
+            <span class="vol-badge" id="vol_small">0</span>
+            <div class="bet-name">SMALL</div>
+            <div class="sub-rule">4-10 • 1:1</div>
+            <div class="except-triples">EXCEPT TRIPLES</div>
+          </div>
+
+          <!-- Center: Grand SIC BO Emblem + 3D Automatic Glass Dome Dice Cup -->
+          <div class="board-center-showcase">
+            <div class="board-banner-title">SIC BO</div>
+            
+            <!-- 3D Automatic Glass Dome Dice Cup Viewport -->
+            <div class="board-dice-cup-wrapper" id="boardDiceCupWrapper">
+              <div class="dice-cup-3d-viewport" id="diceCupViewport"></div>
+            </div>
+
+            <!-- Outcome & Total Banner -->
+            <div class="board-outcome-display">
+              <span class="outcome-total-badge" id="outcomeTotalBadge">PLACE YOUR BETS</span>
+            </div>
+          </div>
+
+          <!-- Arched BIG (Right) -->
+          <div class="bet-cell cell-big" data-bet-key="big">
+            <span class="vol-badge" id="vol_big">0</span>
+            <div class="bet-name">BIG</div>
+            <div class="sub-rule">11-17 • 1:1</div>
+            <div class="except-triples">EXCEPT TRIPLES</div>
+          </div>
+        </div>
+
+        <!-- Row 2: Doubles (1-3), Triples (1-3), ANY TRIPLE, Triples (4-6), Doubles (4-6) -->
+        <div class="board-row-triples-doubles">
+          
+          <!-- Doubles 1 to 3 (Left) -->
+          <div class="doubles-column">
+            <div class="doubles-grid">
+              <div class="bet-cell cell-double" data-bet-key="double_1">
+                <span class="vol-badge" id="vol_double_1">0</span>
+                <div class="dice-stack-vertical">
+                  <div id="prev_d1_a"></div>
+                  <div id="prev_d1_b"></div>
+                </div>
+              </div>
+              <div class="bet-cell cell-double" data-bet-key="double_2">
+                <span class="vol-badge" id="vol_double_2">0</span>
+                <div class="dice-stack-vertical">
+                  <div id="prev_d2_a"></div>
+                  <div id="prev_d2_b"></div>
+                </div>
+              </div>
+              <div class="bet-cell cell-double" data-bet-key="double_3">
+                <span class="vol-badge" id="vol_double_3">0</span>
+                <div class="dice-stack-vertical">
+                  <div id="prev_d3_a"></div>
+                  <div id="prev_d3_b"></div>
+                </div>
+              </div>
+            </div>
+            <div class="subtext-orange">EACH DOUBLE 1 : 10</div>
+          </div>
+
+          <!-- Specific Triples 1 to 3 -->
+          <div class="triples-grid">
+            <div class="bet-cell cell-triple" data-bet-key="triple_1">
+              <span class="vol-badge" id="vol_triple_1">0</span>
+              <div class="dice-stack-horizontal">
+                <div id="prev_t1_a"></div>
+                <div id="prev_t1_b"></div>
+                <div id="prev_t1_c"></div>
+              </div>
+              <div class="bet-odds">1:180</div>
+            </div>
+            <div class="bet-cell cell-triple" data-bet-key="triple_2">
+              <span class="vol-badge" id="vol_triple_2">0</span>
+              <div class="dice-stack-horizontal">
+                <div id="prev_t2_a"></div>
+                <div id="prev_t2_b"></div>
+                <div id="prev_t2_c"></div>
+              </div>
+              <div class="bet-odds">1:180</div>
+            </div>
+            <div class="bet-cell cell-triple" data-bet-key="triple_3">
+              <span class="vol-badge" id="vol_triple_3">0</span>
+              <div class="dice-stack-horizontal">
+                <div id="prev_t3_a"></div>
+                <div id="prev_t3_b"></div>
+                <div id="prev_t3_c"></div>
+              </div>
+              <div class="bet-odds">1:180</div>
+            </div>
+          </div>
+
+          <!-- ANY TRIPLE (Center of Row 2) -->
+          <div class="bet-cell cell-any-triple" data-bet-key="any_triple">
+            <span class="vol-badge" id="vol_any_triple">0</span>
+            <div class="any-triple-dice-grid" id="anyTripleMiniGrid"></div>
+            <div class="any-triple-title">1 : 30 ANY TRIPLE</div>
+          </div>
+
+          <!-- Specific Triples 4 to 6 -->
+          <div class="triples-grid">
+            <div class="bet-cell cell-triple" data-bet-key="triple_4">
+              <span class="vol-badge" id="vol_triple_4">0</span>
+              <div class="dice-stack-horizontal">
+                <div id="prev_t4_a"></div>
+                <div id="prev_t4_b"></div>
+                <div id="prev_t4_c"></div>
+              </div>
+              <div class="bet-odds">1:180</div>
+            </div>
+            <div class="bet-cell cell-triple" data-bet-key="triple_5">
+              <span class="vol-badge" id="vol_triple_5">0</span>
+              <div class="dice-stack-horizontal">
+                <div id="prev_t5_a"></div>
+                <div id="prev_t5_b"></div>
+                <div id="prev_t5_c"></div>
+              </div>
+              <div class="bet-odds">1:180</div>
+            </div>
+            <div class="bet-cell cell-triple" data-bet-key="triple_6">
+              <span class="vol-badge" id="vol_triple_6">0</span>
+              <div class="dice-stack-horizontal">
+                <div id="prev_t6_a"></div>
+                <div id="prev_t6_b"></div>
+                <div id="prev_t6_c"></div>
+              </div>
+              <div class="bet-odds">1:180</div>
+            </div>
+          </div>
+
+          <!-- Doubles 4 to 6 (Right) -->
+          <div class="doubles-column">
+            <div class="doubles-grid">
+              <div class="bet-cell cell-double" data-bet-key="double_4">
+                <span class="vol-badge" id="vol_double_4">0</span>
+                <div class="dice-stack-vertical">
+                  <div id="prev_d4_a"></div>
+                  <div id="prev_d4_b"></div>
+                </div>
+              </div>
+              <div class="bet-cell cell-double" data-bet-key="double_5">
+                <span class="vol-badge" id="vol_double_5">0</span>
+                <div class="dice-stack-vertical">
+                  <div id="prev_d5_a"></div>
+                  <div id="prev_d5_b"></div>
+                </div>
+              </div>
+              <div class="bet-cell cell-double" data-bet-key="double_6">
+                <span class="vol-badge" id="vol_double_6">0</span>
+                <div class="dice-stack-vertical">
+                  <div id="prev_d6_a"></div>
+                  <div id="prev_d6_b"></div>
+                </div>
+              </div>
+            </div>
+            <div class="subtext-orange">EACH DOUBLE 1 : 10</div>
+          </div>
+
+        </div>
+
+        <!-- Row 3: Totals 4 to 17 with Exact Payout Ratios -->
+        <div class="board-row-totals">
+          <div class="bet-cell cell-total" data-bet-key="total_4"><span class="vol-badge" id="vol_total_4">0</span><div class="total-num">4</div><div class="bet-odds">1:60</div></div>
+          <div class="bet-cell cell-total" data-bet-key="total_5"><span class="vol-badge" id="vol_total_5">0</span><div class="total-num">5</div><div class="bet-odds">1:30</div></div>
+          <div class="bet-cell cell-total" data-bet-key="total_6"><span class="vol-badge" id="vol_total_6">0</span><div class="total-num">6</div><div class="bet-odds">1:17</div></div>
+          <div class="bet-cell cell-total" data-bet-key="total_7"><span class="vol-badge" id="vol_total_7">0</span><div class="total-num">7</div><div class="bet-odds">1:12</div></div>
+          <div class="bet-cell cell-total" data-bet-key="total_8"><span class="vol-badge" id="vol_total_8">0</span><div class="total-num">8</div><div class="bet-odds">1:8</div></div>
+          <div class="bet-cell cell-total" data-bet-key="total_9"><span class="vol-badge" id="vol_total_9">0</span><div class="total-num">9</div><div class="bet-odds">1:6</div></div>
+          <div class="bet-cell cell-total" data-bet-key="total_10"><span class="vol-badge" id="vol_total_10">0</span><div class="total-num">10</div><div class="bet-odds">1:6</div></div>
+          <div class="bet-cell cell-total" data-bet-key="total_11"><span class="vol-badge" id="vol_total_11">0</span><div class="total-num">11</div><div class="bet-odds">1:6</div></div>
+          <div class="bet-cell cell-total" data-bet-key="total_12"><span class="vol-badge" id="vol_total_12">0</span><div class="total-num">12</div><div class="bet-odds">1:6</div></div>
+          <div class="bet-cell cell-total" data-bet-key="total_13"><span class="vol-badge" id="vol_total_13">0</span><div class="total-num">13</div><div class="bet-odds">1:8</div></div>
+          <div class="bet-cell cell-total" data-bet-key="total_14"><span class="vol-badge" id="vol_total_14">0</span><div class="total-num">14</div><div class="bet-odds">1:12</div></div>
+          <div class="bet-cell cell-total" data-bet-key="total_15"><span class="vol-badge" id="vol_total_15">0</span><div class="total-num">15</div><div class="bet-odds">1:17</div></div>
+          <div class="bet-cell cell-total" data-bet-key="total_16"><span class="vol-badge" id="vol_total_16">0</span><div class="total-num">16</div><div class="bet-odds">1:30</div></div>
+          <div class="bet-cell cell-total" data-bet-key="total_17"><span class="vol-badge" id="vol_total_17">0</span><div class="total-num">17</div><div class="bet-odds">1:60</div></div>
+        </div>
+
+        <!-- Row 4: 15 Combinations -->
+        <div class="board-row-combos" id="combosRow"></div>
+
+        <!-- Row 5: Single Number Bets (1 to 6) -->
+        <div class="board-row-singles" id="singlesRow"></div>
+
+        <!-- Single Odds Chevrons Banner -->
+        <div class="single-odds-banner">
+          <span class="arrow">&lt;&lt;&lt;</span>
+          <span>1 : 1 ON ONE DICE</span>
+          <span>2 : 1 ON TWO DICE</span>
+          <span>3 : 1 ON THREE DICE</span>
+          <span class="arrow">&gt;&gt;&gt;</span>
+        </div>
+
+        <!-- Minimal Bet Footer -->
+        <div class="board-minimal-bet-footer">
+          MAKE MINIMAL BET: 1 CREDITS
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- Table Sidebar (Overview, History, Phone QR) -->
+    <aside class="table-sidebar">
+      
+      <div class="sidebar-card">
+        <div class="card-header">Table Overview</div>
+        <div class="stat-item">
+          <span>Connected Players</span>
+          <span class="stat-val" id="connectedPlayersVal">0</span>
+        </div>
+        <div class="stat-item">
+          <span>Total Round Pool</span>
+          <span class="stat-val" id="totalRoundPoolVal">0</span>
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="card-header">Recent History</div>
+        <div class="history-list" id="recentHistoryList">
+          <div style="color: #888; font-size: 13px; text-align: center; padding: 10px;">Waiting for first round...</div>
+        </div>
+      </div>
+
+      <div class="sidebar-card qr-container">
+        <div class="card-header">Join On Phone</div>
+        <img class="qr-img" id="qrCodeImg" alt="Scan to join on mobile">
+        <div class="qr-url" id="lanUrlDisplay">Loading URL...</div>
+        <div style="font-size: 11px; color: #8fa899;">Scan QR code with smartphone to place bets</div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/audio.js"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/diceCup3D.bundle.js"></script>
+  <script src="/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,436 @@
+SIC BO Multiplayer GameFull Build Prompt
+HTML • CSS • JavaScript • Node.js • Express • Socket.IO • SQLite
+Copy and paste the complete prompt below into your coding assistant.
+Build a complete multiplayer web-based Sic Bo game using:
+HTML5
+CSS3
+Vanilla JavaScript
+Node.js
+Express.js
+Socket.IO for real-time multiplayer communication
+SQLite for persistent player accounts, balances, and game history
+Do not use React, Vue, Angular, or another front-end framework.
+The game will run on a local network or server.
+There are two interfaces:
+main.html
+Displayed on a large computer monitor or TV.
+Represents the main Sic Bo gaming table.
+Shows the betting board.
+Shows the countdown timer.
+Shows connected players.
+Shows total bets on different areas.
+Rolls and displays the three dice.
+Announces the result.
+Shows winning areas on the board.
+Starts the next round automatically.
+player.html
+Designed primarily for smartphones.
+Players log in here.
+Players see their virtual credit balance.
+Players place bets using their phones.
+Players see their current bets.
+Players see the countdown.
+Players see the same dice result as the main screen.
+Winning credits are automatically credited to their account.
+Losing bets are automatically deducted/settled.
+The game must be server-authoritative. Never calculate official results, player balances, payouts, or dice rolls in the browser.
+PROJECT STRUCTURE
+Create the project approximately like this:
+sicbo/│├── package.json├── server.js├── database.js├── gameEngine.js├── sicboRules.js├── README.md│├── data/│   └── sicbo.db│└── public/    ├── main.html    ├── player.html    ├── login.html    ├── css/    │   ├── main.css    │   └── player.css    ├── js/    │   ├── main.js    │   ├── player.js    │   └── common.js    └── assets/        └── dice/
+Keep game rules separate from Socket.IO and UI code.
+GAME FLOW
+The game runs continuously in rounds.
+Each round should have these states:
+WAITINGBETTING_OPENBETTING_CLOSEDROLLINGRESULTPAYOUTNEXT_ROUND
+Suggested timing:
+Betting open:    20 secondsBetting closed:   2 secondsDice animation:   3 secondsResult display:   5 secondsNext round:       automatic
+Make these timings configurable in server.js or a configuration object.
+Server broadcasts:
+roundStartedtimerUpdatebettingCloseddiceRollingdiceResultwinningBetsbalanceUpdatedroundEnded
+All connected devices must remain synchronized.
+PLAYER ACCOUNTS
+Create a simple account system.
+Database table:
+players-------idusernamepassword_hashdisplay_namecreditscreated_atlast_login
+Players log in using username and password.
+Use:
+bcrypt
+for password hashing.
+Do not store plaintext passwords.
+Use Express sessions or secure authenticated session tokens.
+A player should remain logged in if they refresh the phone.
+Initial player balance can default to:
+1,000 credits
+Make this configurable.
+Credits are virtual game credits with no cash value.
+MAIN DISPLAY
+main.html is the central shared screen.
+Recreate the attached Sic Bo board as closely as practical using HTML/CSS rather than simply displaying the reference image.
+Use a dark green casino-table appearance with gold/yellow betting areas and light borders.
+The layout should include:
+SMALL
+Dice total:
+4 through 10
+except triples.
+Payout:
+1:1
+BIG
+Dice total:
+11 through 17
+except triples.
+Payout:
+1:1
+SPECIFIC TOTALS
+Include totals:
+4   1:605   1:306   1:177   1:128   1:89   1:610  1:611  1:612  1:613  1:814  1:1215  1:1716  1:3017  1:60
+DOUBLE BETS
+Include:
+Double 1Double 2Double 3Double 4Double 5Double 6
+Win if at least two dice show that number.
+Payout:
+1:10
+SPECIFIC TRIPLES
+Include:
+Triple 1Triple 2Triple 3Triple 4Triple 5Triple 6
+Payout:
+1:180
+ANY TRIPLE
+Win if all three dice have the same value.
+Examples:
+1-1-12-2-23-3-34-4-45-5-56-6-6
+Payout:
+1:30
+TWO-DICE COMBINATIONS
+Include all unique two-number combinations:
+1+21+31+41+51+6
+2+32+42+52+6
+3+43+53+6
+4+54+6
+5+6
+Win when both selected numbers appear among the three dice.
+Payout:
+1:5
+SINGLE NUMBER BETS
+Player may bet on:
+123456
+If selected number appears once:
+1:1
+If selected number appears twice:
+2:1
+If selected number appears three times:
+3:1
+Implement this payout dynamically.
+IMPORTANT SMALL/BIG RULE
+A triple must lose both:
+SMALLBIG
+even if its total mathematically falls inside the Small or Big range.
+Example:
+3 + 3 + 3 = 9
+Normally 9 is Small, but because it is a triple, the Small bet loses.
+PLAYER PHONE INTERFACE
+Make player.html responsive and optimized for portrait smartphone use.
+At the top display:
+Player: MikeCredits: 1,250Round: #42Betting closes in: 14 sec
+Below that show chip values:
+15102550100500
+Player taps one to select a betting amount.
+Then player taps a betting area.
+Example:
+Selected chip: 25
+Player taps:
+BIG
+A 25-credit wager is added.
+Allow multiple taps to increase the bet.
+Example:
+BIG75 credits
+BETTING VALIDATION
+Every bet must go to the Node.js server.
+Server validates:
+player is authenticatedbetting is openbet type existsbet amount is validplayer has sufficient creditsround ID is correct
+Never trust:
+client balanceclient bet amountclient round stateclient dice results
+The server is the source of truth.
+BALANCE HANDLING
+When a player places a bet, reserve or deduct that amount immediately.
+Example:
+Balance before bet: 1000Bet: 100Available balance: 900
+When the round settles:
+if bet loses:
+payout = 0
+if bet wins:
+return the original wager plus winnings.
+Example:
+Bet: 100Payout odds: 1:1
+Profit = 100Returned stake = 100Total credited = 200
+Be consistent throughout the application.
+BET DATABASE
+Add a table:
+bets----idround_idplayer_idbet_typebet_valuewagerpayoutresultcreated_atsettled_at
+Possible result values:
+pendingwonlostvoid
+ROUND DATABASE
+Add:
+rounds------iddice1dice2dice3totalstarted_atended_at
+Keep complete round history.
+TRANSACTION LEDGER
+Do not rely only on the player's current balance.
+Create:
+transactions------------idplayer_idround_idtypeamountbalance_beforebalance_afterreferencecreated_at
+Transaction types:
+INITIAL_CREDITBETWINREFUNDADMIN_CREDITADMIN_DEBIT
+This provides a proper audit trail and makes debugging balances much easier.
+DICE ROLLING
+Generate the official dice roll on the Node.js server.
+Do not generate it in JavaScript running in the browser.
+Use Node.js cryptographic randomness.
+For example:
+crypto.randomInt(1, 7)
+Generate three independent dice:
+const dice = [  crypto.randomInt(1, 7),  crypto.randomInt(1, 7),  crypto.randomInt(1, 7)];
+Save the result in the database before broadcasting the result.
+DICE ANIMATION
+On main.html, display three large animated dice.
+During ROLLING:
+continuously show changing random visual faces for approximately 3 seconds.
+These animation values are cosmetic only.
+When the server sends the official result:
+stop the animation and show the actual dice.
+Example:
+[ 3 ] [ 5 ] [ 6 ]
+TOTAL: 14
+Phones should show the same result.
+WINNING BOARD ANIMATION
+After the dice appear, highlight every winning betting position.
+Example result:
+3, 5, 6
+highlight:
+BIGTOTAL 14combination 3+5combination 3+6combination 5+6single 3single 5single 6
+Use a glowing or flashing CSS effect.
+Then remove the highlights when the next round starts.
+PHONE BETTING EXPERIENCE
+Make betting simple.
+Selected bet should visually show chips or amount.
+Example:
+SMALL100
+Include:
+Undo Last BetClear Bets
+These only work while betting is still open.
+The server must approve all cancellations.
+Once betting closes, bets cannot be changed.
+CURRENT BET SUMMARY
+Player screen should display:
+YOUR BETS
+BIG           100TOTAL 12       25DOUBLE 4       10
+Total wagered: 135
+After settlement:
+ROUND RESULT
+Dice: 4 - 4 - 6Total: 14
+Won: 210 creditsLost: 25 credits
+New Balance: 1,340
+MAIN DISPLAY INFORMATION
+At the top of main.html, display:
+SIC BO
+Round #42BETTING OPEN14
+Countdown should become more visually prominent for the last five seconds.
+When betting closes:
+NO MORE BETS
+During rolling:
+ROLLING...
+Then:
+RESULT3 - 5 - 6TOTAL 14
+LIVE MULTIPLAYER
+Use Socket.IO rooms or session mapping.
+Multiple players must be able to connect simultaneously.
+Every player's balance is private.
+The main board should not need to display individual balances.
+Main board may display:
+Players connected: 8Total wagered this round: 3,420
+Optionally display total betting volume on each betting area.
+Example:
+BIG840 credits
+RECONNECT SUPPORT
+If a phone temporarily loses Wi-Fi:
+when it reconnects, request:
+current roundcurrent countdowncurrent player balancecurrent betscurrent game state
+The player should continue without losing existing wagers.
+ADMIN PANEL
+Also create:
+/admin.html
+Protected by administrator authentication.
+Administrator can:
+view playerscreate playersdisable playersreset passwordsadd creditsremove creditsview balancesview current betsview past roundsview transaction historypause gameresume gamestart new round
+Any admin balance adjustment must be entered in the transaction ledger.
+Do not allow arbitrary balance editing without a transaction record.
+OPTIONAL PLAYER JOIN QR CODE
+On main.html, show:
+JOIN GAME
+and a QR code pointing to:
+http://SERVER-IP:3000
+or:
+http://SERVER-IP:3000/player
+Players scan the QR code and open the betting page.
+Use the qrcode npm package if needed.
+SECURITY
+Implement reasonable security even though this version uses virtual credits.
+Include:
+bcrypt password hashingsecure session handlinginput validationrate limitingserver-authoritative balancesserver-authoritative diceserver-authoritative timerparameterized SQL queriesprotection against negative betsprotection against decimal exploitsprotection against duplicate bet requestsprotection against replayed Socket.IO messages
+Generate a unique ID for every betting request.
+Example:
+requestIdplayerIdroundIdbetTypebetValueamount
+If the same requestId is received twice, process it only once.
+DATABASE TRANSACTIONS
+Balance changes and bets must use SQLite transactions.
+Example process:
+BEGIN TRANSACTION
+check player's balanceinsert betdeduct creditsinsert transaction record
+COMMIT
+If any step fails:
+ROLLBACK
+Do the same during payout settlement.
+This prevents balance corruption.
+SIC BO RULE ENGINE
+Create functions similar to:
+function isTriple(dice) {}function calculateTotal(dice) {}function evaluateSmall(dice) {}function evaluateBig(dice) {}function evaluateTotalBet(dice, selectedTotal) {}function evaluateDouble(dice, number) {}function evaluateTriple(dice, number) {}function evaluateAnyTriple(dice) {}function evaluateCombination(dice, number1, number2) {}function evaluateSingleNumber(dice, number) {}function calculatePayout(bet, dice) {}
+Keep the rule engine independent so it can be unit tested.
+AUTOMATED TESTING
+Add tests for all important Sic Bo outcomes.
+Examples:
+dice 1,2,3total 6Small winsBig losestotal 6 winssingles 1,2,3 wincombinations 1+2, 1+3, 2+3 win
+Test:
+3,3,3
+Ensure:
+Small losesBig losesAny Triple winsTriple 3 winsDouble 3 winsSingle 3 pays according to three occurrences
+Also test:
+6,6,6
+and all boundary totals:
+4101117
+VISUAL DESIGN
+Use the attached Sic Bo board as the main visual reference.
+Desktop board:
+dark green felt backgroundgold/yellow numbers and dicewhite/light-grey table borderslarge SMALL section on upper leftlarge BIG section on upper righttriples in upper middletotals 4 through 17 in centernumber combinations below totalsindividual dice numbers along bottom
+Do not copy any casino branding.
+Create the layout using semantic HTML elements and CSS Grid.
+The desktop layout should scale cleanly for:
+1920x10802560x14403840x2160
+Player page should work well at:
+360px390px412px430px
+widths.
+SERVER URLS
+Create:
+/
+Redirect to player login.
+/player
+Player interface.
+/table
+Main computer display.
+/admin
+Administrator interface.
+SOCKET EVENTS
+Design a clean Socket.IO API.
+Suggested server broadcasts:
+game:stategame:round-startgame:timergame:betting-closedgame:rollinggame:resultgame:round-settledgame:round-ended
+Player-specific events:
+player:stateplayer:balanceplayer:betsplayer:bet-resultplayer:round-result
+Client-to-server:
+bet:placebet:undobet:clearplayer:sync
+ROUND SYNCHRONIZATION
+Do not create separate JavaScript countdown timers that determine game state independently on every device.
+Server controls the official deadline.
+Store something like:
+bettingClosesAt
+as a Unix timestamp.
+Browsers display:
+bettingClosesAt - Date.now()
+but the server decides whether betting is actually allowed.
+GAME ENGINE
+Build the Node game loop so there is always exactly one authoritative game round.
+Prevent two rounds from accidentally starting simultaneously.
+Suggested object:
+const gameState = {    roundId: null,    state: "WAITING",    bettingClosesAt: null,    dice: null,    total: null};
+STARTUP RECOVERY
+If Node.js restarts unexpectedly:
+recover safely.
+Any unfinished round should be detected.
+Pending bets should either:
+resume safely
+or preferably:
+void the unfinished round and refund outstanding wagers
+Record refunds in the transaction ledger.
+Never leave credits permanently trapped in an unfinished round.
+SOUND
+Add optional sounds:
+betting open5-second countdownno more betsdice rollingdice landingwinnext round
+Provide a mute button.
+Do not require sound files to make the game function.
+HISTORY
+Main board should display approximately the last 10 dice results.
+Example:
+HISTORY
+3 5 6 = 14 BIG1 2 4 = 7 SMALL5 5 5 = TRIPLE2 3 6 = 11 BIG
+Player phone should provide:
+My History
+showing:
+roundwagersdiceamount wageredamount wonbalance after round
+ERROR HANDLING
+Display understandable errors such as:
+Betting has closed.Insufficient credits.Invalid bet.You are no longer connected.Your session has expired.Bet already processed.
+Never expose raw SQL errors or stack traces to players.
+DEVELOPMENT MODE
+Add:
+npm run dev
+using nodemon.
+And:
+npm start
+for normal operation.
+When the server starts, print:
+Sic Bo server running
+Player:http://localhost:3000
+Main Table:http://localhost:3000/table
+Admin:http://localhost:3000/admin
+LAN access:http://192.168.x.x:3000
+Attempt to detect and display the computer's LAN IPv4 address.
+INITIAL ADMIN ACCOUNT
+On first startup only, either ask the administrator to create an account or create a temporary admin account and force a password change.
+Do not hard-code a permanent admin password in the source code.
+CODE QUALITY
+Requirements:
+clear variable namesmodular codecomments where necessaryno giant server.js fileno duplicated payout logicreusable UI functionsno inline JavaScriptno inline CSS unless unavoidable
+Keep:
+UInetworkinggame rulesdatabaseauthentication
+separated.
+README
+Create a complete README.md explaining:
+prerequisitesNode.js installationnpm installdatabase initializationnpm startnpm run devopening main displayconnecting phonesusing LAN IPcreating playersadministrator controlsresetting databasegame rulespayout rules
+Include instructions for Windows because this system is likely to run from a Windows PC.
+FINAL DELIVERABLE
+Produce a completely runnable application.
+Do not provide pseudocode.
+Generate all files required for the project.
+Start by:
+Creating the directory/file structure.
+Creating package.json.
+Building the SQLite database layer.
+Building the Sic Bo rule engine.
+Building the game state engine.
+Building Express/Socket.IO server.
+Building authentication.
+Building main.html.
+Building responsive player.html.
+Building admin.html.
+Adding CSS.
+Adding Socket.IO synchronization.
+Adding payout settlement.
+Adding tests.
+Adding README.
+Running and fixing the application until it starts without errors.
+Before considering the project complete, verify the following end-to-end scenario:
+PC opens /tablePlayer 1 logs in from phonePlayer 2 logs in from another phoneBoth see the same round countdownPlayer 1 bets 100 on BIGPlayer 2 bets 25 on total 9Bets appear correctlyBetting closesThree dice rollSame result appears on every deviceWinning areas illuminateServer determines all payoutsPlayer balances update automaticallyResults are stored in SQLiteNext round startsRefreshing either phone does not lose balance or active session
+The final result should feel like a real electronic multiplayer Sic Bo table, where the computer is the shared table and every smartphone is a private betting terminal.
+ARCHITECTURE PRINCIPLE
+Use this architecture:
+                    NODE.JS SERVER / GAME PC                              |                +-------------+-------------+                |                           |          MAIN DISPLAY                 Wi-Fi / LAN          /table                           |                |               +----------+----------+          Dice + board          |          |          |                             Phone 1    Phone 2    Phone 3                             /player    /player    /player                                |          |          |                              Bets       Bets       Bets                                +----------+----------+                                           |                                      Socket.IO                                           |                                        SQLite
+Node.js must act as the dealer. main.html and the phones are terminals only.
+The transaction ledger plus server-authoritative balance are mandatory. Do not simply store credits and modify them from browser JavaScript. Every credit movement should be traceable so duplicate payouts, disconnects, repeated taps, and server restarts do not corrupt balances.
+IMPORTANT IMPLEMENTATION EXPECTATION
+Build the project in working stages and test each stage before moving on. Do not stop after generating source code. Run the application, fix syntax/runtime errors, verify database initialization, verify Socket.IO connectivity, and test at least two simultaneous player sessions plus the main table display.
+This first version must use virtual credits only. Do not implement real-money deposits, withdrawals, wagering, cash prizes, or payment processing.

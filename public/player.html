@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sic Bo - Mobile Terminal</title>
+  <link rel="stylesheet" href="/css/player.css">
+</head>
+<body>
+
+  <div class="mobile-app-wrapper">
+    <!-- TOP AREA: Header HUD + Acrylic Dome with Rolling Dice + Roadmap -->
+    <header class="top-stage">
+      <div class="top-hud-bar">
+        <div class="top-brand-group">
+          <span class="brand-text-gold">SIC BO</span>
+          <span class="round-pill-mini" id="roundLabelMini">Round #--</span>
+        </div>
+
+        <div class="roadmap-chips-row" id="roadmapChipsRow">
+          <!-- Populated dynamically: [11 B] [8 S] [18 T] -->
+        </div>
+
+        <div class="top-actions-right">
+          <button class="icon-small-btn wake-active" id="wakeLockBtn" title="Keep Screen On (Awake)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          </button>
+          <button class="icon-small-btn" id="soundBtn" title="Sound">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+          </button>
+          <button class="icon-small-btn" id="historyBtn" title="History">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+          </button>
+          <button class="icon-small-btn" id="logoutBtn" title="Logout">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+          </button>
+        </div>
+      </div>
+
+    </header>
+
+    <!-- MAIN FELT BETTING GRID (Matching SICBO.jpg, STRICTLY NO SCROLLING) -->
+    <main class="felt-betting-grid" id="feltBettingGrid">
+
+      <!-- ROW 1: SMALL / ANY TRIPLE / BIG (Arched Look Matching Table) -->
+      <section class="grid-row-1">
+        <div class="touch-cell cell-small-hero" data-type="small" data-value="">
+          <div class="touch-placed-chip" id="chip_small"></div>
+          <div class="cell-title">SMALL</div>
+          <div class="cell-sub">4 - 10 &bull; 1:1</div>
+          <div class="cell-triples-note">EXCEPT TRIPLES</div>
+        </div>
+
+        <div class="touch-cell cell-any-triple-hero" data-type="any_triple" data-value="">
+          <div class="touch-placed-chip" id="chip_any_triple"></div>
+          <div class="any-title">ANY TRIPLE</div>
+          <div class="any-triple-mini-grid" id="anyTripleMobileGrid"></div>
+          <div class="any-odds">1 : 30</div>
+        </div>
+
+        <div class="touch-cell cell-big-hero" data-type="big" data-value="">
+          <div class="touch-placed-chip" id="chip_big"></div>
+          <div class="cell-title">BIG</div>
+          <div class="cell-sub">11 - 17 &bull; 1:1</div>
+          <div class="cell-triples-note">EXCEPT TRIPLES</div>
+        </div>
+      </section>
+
+      <!-- ROW 2-4 HEADER: Doubles & Triples -->
+      <div class="doubles-triples-header">
+        <div>DOUBLE 1:10</div>
+        <div>TRIPLE 1:180</div>
+        <div>DOUBLE 1:10</div>
+      </div>
+
+      <!-- ROW 2-4 GRID: 4 columns x 3 rows with REAL CASINO DICE -->
+      <section class="grid-row-doubles-triples">
+        <!-- Row 1: Double 1, Triple 1, Triple 4, Double 4 -->
+        <div class="touch-cell cell-double-box" data-type="double" data-value="1">
+          <div class="touch-placed-chip" id="chip_double_1"></div>
+          <div class="dice-pair-horizontal" id="doubleDiceFace_1"></div>
+          <div class="cell-odds-tag">1:10</div>
+        </div>
+        <div class="touch-cell cell-triple-box" data-type="triple" data-value="1">
+          <div class="touch-placed-chip" id="chip_triple_1"></div>
+          <div class="dice-trio-pyramid" id="tripleDiceFace_1"></div>
+          <div class="cell-odds-tag">1:180</div>
+        </div>
+        <div class="touch-cell cell-triple-box" data-type="triple" data-value="4">
+          <div class="touch-placed-chip" id="chip_triple_4"></div>
+          <div class="dice-trio-pyramid" id="tripleDiceFace_4"></div>
+          <div class="cell-odds-tag">1:180</div>
+        </div>
+        <div class="touch-cell cell-double-box" data-type="double" data-value="4">
+          <div class="touch-placed-chip" id="chip_double_4"></div>
+          <div class="dice-pair-horizontal" id="doubleDiceFace_4"></div>
+          <div class="cell-odds-tag">1:10</div>
+        </div>
+
+        <!-- Row 2: Double 2, Triple 2, Triple 5, Double 5 -->
+        <div class="touch-cell cell-double-box" data-type="double" data-value="2">
+          <div class="touch-placed-chip" id="chip_double_2"></div>
+          <div class="dice-pair-horizontal" id="doubleDiceFace_2"></div>
+          <div class="cell-odds-tag">1:10</div>
+        </div>
+        <div class="touch-cell cell-triple-box" data-type="triple" data-value="2">
+          <div class="touch-placed-chip" id="chip_triple_2"></div>
+          <div class="dice-trio-pyramid" id="tripleDiceFace_2"></div>
+          <div class="cell-odds-tag">1:180</div>
+        </div>
+        <div class="touch-cell cell-triple-box" data-type="triple" data-value="5">
+          <div class="touch-placed-chip" id="chip_triple_5"></div>
+          <div class="dice-trio-pyramid" id="tripleDiceFace_5"></div>
+          <div class="cell-odds-tag">1:180</div>
+        </div>
+        <div class="touch-cell cell-double-box" data-type="double" data-value="5">
+          <div class="touch-placed-chip" id="chip_double_5"></div>
+          <div class="dice-pair-horizontal" id="doubleDiceFace_5"></div>
+          <div class="cell-odds-tag">1:10</div>
+        </div>
+
+        <!-- Row 3: Double 3, Triple 3, Triple 6, Double 6 -->
+        <div class="touch-cell cell-double-box" data-type="double" data-value="3">
+          <div class="touch-placed-chip" id="chip_double_3"></div>
+          <div class="dice-pair-horizontal" id="doubleDiceFace_3"></div>
+          <div class="cell-odds-tag">1:10</div>
+        </div>
+        <div class="touch-cell cell-triple-box" data-type="triple" data-value="3">
+          <div class="touch-placed-chip" id="chip_triple_3"></div>
+          <div class="dice-trio-pyramid" id="tripleDiceFace_3"></div>
+          <div class="cell-odds-tag">1:180</div>
+        </div>
+        <div class="touch-cell cell-triple-box" data-type="triple" data-value="6">
+          <div class="touch-placed-chip" id="chip_triple_6"></div>
+          <div class="dice-trio-pyramid" id="tripleDiceFace_6"></div>
+          <div class="cell-odds-tag">1:180</div>
+        </div>
+        <div class="touch-cell cell-double-box" data-type="double" data-value="6">
+          <div class="touch-placed-chip" id="chip_double_6"></div>
+          <div class="dice-pair-horizontal" id="doubleDiceFace_6"></div>
+          <div class="cell-odds-tag">1:10</div>
+        </div>
+      </section>
+
+      <!-- ROW 5 & 6: TOTALS 4 TO 17 (7 Columns x 2 Rows) -->
+      <section class="grid-row-totals">
+        <!-- Top row: 4 to 10 -->
+        <div class="touch-cell cell-total-box" data-type="total" data-value="4">
+          <div class="touch-placed-chip" id="chip_total_4"></div>
+          <div class="total-digit">4</div>
+          <div class="total-ratio">1:60</div>
+        </div>
+        <div class="touch-cell cell-total-box" data-type="total" data-value="5">
+          <div class="touch-placed-chip" id="chip_total_5"></div>
+          <div class="total-digit">5</div>
+          <div class="total-ratio">1:30</div>
+        </div>
+        <div class="touch-cell cell-total-box" data-type="total" data-value="6">
+          <div class="touch-placed-chip" id="chip_total_6"></div>
+          <div class="total-digit">6</div>
+          <div class="total-ratio">1:17</div>
+        </div>
+        <div class="touch-cell cell-total-box" data-type="total" data-value="7">
+          <div class="touch-placed-chip" id="chip_total_7"></div>
+          <div class="total-digit">7</div>
+          <div class="total-ratio">1:12</div>
+        </div>
+        <div class="touch-cell cell-total-box" data-type="total" data-value="8">
+          <div class="touch-placed-chip" id="chip_total_8"></div>
+          <div class="total-digit">8</div>
+          <div class="total-ratio">1:8</div>
+        </div>
+        <div class="touch-cell cell-total-box" data-type="total" data-value="9">
+          <div class="touch-placed-chip" id="chip_total_9"></div>
+          <div class="total-digit">9</div>
+          <div class="total-ratio">1:6</div>
+        </div>
+        <div class="touch-cell cell-total-box" data-type="total" data-value="10">
+          <div class="touch-placed-chip" id="chip_total_10"></div>
+          <div class="total-digit">10</div>
+          <div class="total-ratio">1:6</div>
+        </div>
+
+        <!-- Bottom row: 17 down to 11 -->
+        <div class="touch-cell cell-total-box" data-type="total" data-value="17">
+          <div class="touch-placed-chip" id="chip_total_17"></div>
+          <div class="total-digit">17</div>
+          <div class="total-ratio">1:60</div>
+        </div>
+        <div class="touch-cell cell-total-box" data-type="total" data-value="16">
+          <div class="touch-placed-chip" id="chip_total_16"></div>
+          <div class="total-digit">16</div>
+          <div class="total-ratio">1:30</div>
+        </div>
+        <div class="touch-cell cell-total-box" data-type="total" data-value="15">
+          <div class="touch-placed-chip" id="chip_total_15"></div>
+          <div class="total-digit">15</div>
+          <div class="total-ratio">1:17</div>
+        </div>
+        <div class="touch-cell cell-total-box" data-type="total" data-value="14">
+          <div class="touch-placed-chip" id="chip_total_14"></div>
+          <div class="total-digit">14</div>
+          <div class="total-ratio">1:12</div>
+        </div>
+        <div class="touch-cell cell-total-box" data-type="total" data-value="13">
+          <div class="touch-placed-chip" id="chip_total_13"></div>
+          <div class="total-digit">13</div>
+          <div class="total-ratio">1:8</div>
+        </div>
+        <div class="touch-cell cell-total-box" data-type="total" data-value="12">
+          <div class="touch-placed-chip" id="chip_total_12"></div>
+          <div class="total-digit">12</div>
+          <div class="total-ratio">1:6</div>
+        </div>
+        <div class="touch-cell cell-total-box" data-type="total" data-value="11">
+          <div class="touch-placed-chip" id="chip_total_11"></div>
+          <div class="total-digit">11</div>
+          <div class="total-ratio">1:6</div>
+        </div>
+      </section>
+
+      <!-- ROW 7: SINGLE NUMBERS 1 TO 6 -->
+      <div class="singles-header-banner">
+        SINGLES: 1 DIE 1:1 &bull; 2 DICE 2:1 &bull; 3 DICE 3:1
+      </div>
+      <section class="grid-row-singles" id="singlesGrid">
+        <div class="touch-cell cell-single-box" data-type="single" data-value="1">
+          <div class="touch-placed-chip" id="chip_single_1"></div>
+          <div id="singleDieFace_1"></div>
+        </div>
+        <div class="touch-cell cell-single-box" data-type="single" data-value="2">
+          <div class="touch-placed-chip" id="chip_single_2"></div>
+          <div id="singleDieFace_2"></div>
+        </div>
+        <div class="touch-cell cell-single-box" data-type="single" data-value="3">
+          <div class="touch-placed-chip" id="chip_single_3"></div>
+          <div id="singleDieFace_3"></div>
+        </div>
+        <div class="touch-cell cell-single-box" data-type="single" data-value="4">
+          <div class="touch-placed-chip" id="chip_single_4"></div>
+          <div id="singleDieFace_4"></div>
+        </div>
+        <div class="touch-cell cell-single-box" data-type="single" data-value="5">
+          <div class="touch-placed-chip" id="chip_single_5"></div>
+          <div id="singleDieFace_5"></div>
+        </div>
+        <div class="touch-cell cell-single-box" data-type="single" data-value="6">
+          <div class="touch-placed-chip" id="chip_single_6"></div>
+          <div id="singleDieFace_6"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- BOTTOM CONTROLS BAR: Balance, Chips & Actions -->
+    <footer class="bottom-control-panel">
+      <div class="balance-wager-bar">
+        <div>Balance: <span class="stat-val-gold" id="playerCreditsDisplay">1,000</span></div>
+        <div>Bet: <span class="stat-val-gold" id="totalWageredBottom">0</span></div>
+        <button class="btn-combos-drawer" id="openCombosBtn">Combos (1:5)</button>
+      </div>
+
+      <div class="chips-actions-row">
+        <div class="player-profile-tag">
+          <div class="player-avatar-circle" id="playerAvatarCircle">P</div>
+          <span class="player-tag-name" id="playerNameTag">Player</span>
+        </div>
+
+        <div class="chips-carousel" id="chipSelectorTray">
+          <div class="app-chip c-1" data-val="1">1</div>
+          <div class="app-chip c-5" data-val="5">5</div>
+          <div class="app-chip c-10" data-val="10">10</div>
+          <div class="app-chip c-25 active" data-val="25">25</div>
+          <div class="app-chip c-50" data-val="50">50</div>
+          <div class="app-chip c-100" data-val="100">100</div>
+          <div class="app-chip c-500" data-val="500">500</div>
+        </div>
+
+        <div class="action-icon-buttons">
+          <button class="app-act-btn" id="doubleBetsBtn" title="Double Bets">
+            <span style="font-size:10px; font-weight:900;">2X</span>
+            <span>DBL</span>
+          </button>
+          <button class="app-act-btn" id="undoBetBtn" title="Undo Last Bet">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+            <span>UNDO</span>
+          </button>
+          <button class="app-act-btn clear" id="clearBetsBtn" title="Clear Bets">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            <span>CLEAR</span>
+          </button>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- MODAL: TWO-DICE COMBINATIONS DRAWER (1:5 Payout) -->
+  <div class="modal-backdrop" id="combosModalBackdrop">
+    <div class="modal-sheet">
+      <div class="sheet-header">
+        <div class="sheet-title">Two-Dice Combinations (1:5)</div>
+        <button class="close-btn" id="closeCombosModalBtn">&times;</button>
+      </div>
+      <div class="combos-drawer-grid" id="combosDrawerGrid">
+        <!-- Generated dynamically with 15 combinations -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: MY BETTING HISTORY -->
+  <div class="modal-backdrop" id="historyModalBackdrop">
+    <div class="modal-sheet">
+      <div class="sheet-header">
+        <div class="sheet-title">My Betting History</div>
+        <button class="close-btn" id="closeHistoryModalBtn">&times;</button>
+      </div>
+      <div class="sheet-body" id="historyModalList" style="overflow-y: auto; max-height: 60vh;">
+        <div style="text-align: center; color: #888; padding: 20px;">Loading history...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ROUND SETTLEMENT POPUP -->
+  <div class="modal-backdrop" id="resultModalBackdrop">
+    <div class="modal-sheet" style="text-align: center;">
+      <div class="sheet-header">
+        <div class="sheet-title" id="settlementTitle">Round Settled</div>
+        <button class="close-btn" id="closeResultModalBtn">&times;</button>
+      </div>
+      <div style="padding: 10px 0;">
+        <div style="font-size: 20px; font-weight: 900; color: #ffdf78; margin-bottom: 6px;" id="settlementOutcomeText">TOTAL: --</div>
+        <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 12px;" id="settlementDiceDisplay"></div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 14px;">
+          <div style="background: rgba(46, 204, 113, 0.2); border: 1px solid #2ecc71; border-radius: 8px; padding: 6px;">
+            <div style="font-size: 10px; color: #2ecc71; font-weight: 800;">Won</div>
+            <div style="font-size: 15px; font-weight: 900; color: #fff;" id="settlementWonVal">0</div>
+          </div>
+          <div style="background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; border-radius: 8px; padding: 6px;">
+            <div style="font-size: 10px; color: #ff8e8e; font-weight: 800;">Lost</div>
+            <div style="font-size: 15px; font-weight: 900; color: #fff;" id="settlementLostVal">0</div>
+          </div>
+          <div style="background: rgba(230, 184, 67, 0.2); border: 1px solid #ffd358; border-radius: 8px; padding: 6px;">
+            <div style="font-size: 10px; color: #ffd358; font-weight: 800;">New Balance</div>
+            <div style="font-size: 15px; font-weight: 900; color: #ffdf78;" id="settlementNewBalVal">0</div>
+          </div>
+        </div>
+        <button id="dismissResultBtn" style="width: 100%; padding: 10px; border-radius: 8px; font-weight: 800; background: #e6b843; color: #111; border: none; font-size: 14px; cursor: pointer;">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/audio.js"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/player.js"></script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+/* Administrator Portal Styling */
+:root {
+  --admin-bg: #0d1117;
+  --admin-card: #161b22;
+  --admin-border: #30363d;
+  --admin-text: #c9d1d9;
+  --admin-gold: #e5b33d;
+  --admin-green: #238636;
+  --admin-red: #da3633;
+  --admin-blue: #58a6ff;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--admin-bg);
+  color: var(--admin-text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-navbar {
+  background: #010409;
+  border-bottom: 1px solid var(--admin-border);
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-brand {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--admin-gold);
+  letter-spacing: 1px;
+}
+
+.admin-nav-links {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.nav-tab-btn {
+  background: none;
+  border: none;
+  color: var(--admin-text);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+
+.nav-tab-btn.active {
+  background: #21262d;
+  color: #fff;
+}
+
+.admin-main {
+  flex: 1;
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.tab-pane {
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tab-pane.active {
+  display: flex;
+}
+
+/* Cards & Sections */
+.admin-card {
+  background: var(--admin-card);
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Controls Bar */
+.control-btn-group {
+  display: flex;
+  gap: 12px;
+}
+
+.admin-btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.1s;
+}
+
+.admin-btn.primary { background: var(--admin-green); color: #fff; border-color: rgba(255, 255, 255, 0.2); }
+.admin-btn.warning { background: #d29922; color: #fff; }
+.admin-btn.danger { background: var(--admin-red); color: #fff; }
+.admin-btn.secondary { background: #21262d; color: #c9d1d9; border-color: var(--admin-border); }
+
+.admin-btn:hover { filter: brightness(1.15); }
+.admin-btn:active { transform: scale(0.97); }
+
+/* Data Tables */
+.admin-table-container {
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  text-align: left;
+}
+
+.admin-table th {
+  background: #21262d;
+  color: #8b949e;
+  padding: 10px 12px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.badge-active { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+.badge-disabled { background: rgba(231, 76, 60, 0.2); color: #ff8e8e; }
+.badge-admin { background: rgba(229, 179, 61, 0.2); color: var(--admin-gold); }
+
+/* Forms */
+.inline-form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.admin-input {
+  background: #0d1117;
+  border: 1px solid var(--admin-border);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+}
+.admin-input:focus {
+  border-color: var(--admin-blue);
+}
+
+/* Modal Popup */
+.admin-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.admin-modal-backdrop.open {
+  display: flex;
+}
+
+.admin-modal-card {
+  background: var(--admin-card);
+  border: 1px solid var(--admin-border);
+  border-radius: 10px;
+  width: 100%;
+  max-width: 450px;
+  padding: 24px;
+}

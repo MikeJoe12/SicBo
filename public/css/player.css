@@ -1,0 +1,795 @@
+/* Modern Single-Page Mobile Sic Bo Player Terminal - Matching Table Format (SICBO.jpg) */
+:root {
+  --felt-base: #0a3320;
+  --felt-radial: radial-gradient(ellipse at 50% 30%, #134c32 0%, #092e1c 65%, #051d11 100%);
+  --felt-border-solid: #8cb9a0;
+  --felt-border-subtle: rgba(140, 185, 160, 0.4);
+  --gold-primary: #e6b843;
+  --gold-bright: #ffdf78;
+  --gold-dark: #b88a22;
+  --gold-shadow: rgba(230, 184, 67, 0.5);
+  --text-white: #ffffff;
+  --cell-bg: rgba(0, 0, 0, 0.35);
+  --cell-bg-hover: rgba(230, 184, 67, 0.25);
+  --win-glow: #ffe853;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden; /* STRICTLY NO SCROLLING */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: #03140b;
+  color: var(--text-white);
+}
+
+.mobile-app-wrapper {
+  width: 100%;
+  max-width: 480px;
+  height: 100%;
+  height: 100dvh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--felt-radial);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.95);
+}
+
+/* TOP AREA: Header HUD + Acrylic Dome with Rolling Dice + Roadmap */
+.top-stage {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  background: rgba(3, 16, 10, 0.92);
+  border-bottom: 2px solid var(--felt-border-solid);
+  padding: 4px 6px;
+  position: relative;
+}
+
+.top-hud-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 1px 0;
+}
+
+.top-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.brand-text-gold {
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--gold-bright);
+  letter-spacing: 1.5px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.round-pill-mini {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: #8cb9a0;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 1px 6px;
+  border-radius: 10px;
+  border: 1px solid var(--felt-border-subtle);
+}
+
+.roadmap-chips-row {
+  display: flex;
+  gap: 3px;
+  overflow-x: hidden;
+  max-width: 210px;
+}
+
+.mini-roadmap-die {
+  background: #111;
+  border: 1px solid #444;
+  border-radius: 3px;
+  padding: 1px 4px;
+  font-size: 8.5px;
+  font-weight: 800;
+  color: #fff;
+  white-space: nowrap;
+}
+.mini-roadmap-die.small { color: #2ecc71; border-color: rgba(46, 204, 113, 0.6); }
+.mini-roadmap-die.big { color: #3498db; border-color: rgba(52, 152, 219, 0.6); }
+.mini-roadmap-die.triple { color: #e74c3c; border-color: rgba(231, 76, 60, 0.7); }
+
+.top-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.icon-small-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--felt-border-subtle);
+  color: #fff;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.icon-small-btn:active { background: rgba(230, 184, 67, 0.3); }
+.icon-small-btn.wake-active {
+  background: rgba(245, 158, 11, 0.25);
+  border-color: #f59e0b;
+  color: #fbbf24;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+}
+.icon-small-btn.wake-inactive {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* Center Acrylic Dome Row */
+.dome-showcase-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1px 0;
+}
+
+.player-info-mini {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 60px;
+}
+.avatar-dot-header {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #27ae60, #16a085);
+  border: 1px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 10px;
+  color: #fff;
+}
+.player-name-header {
+  font-size: 10px;
+  font-weight: 800;
+  color: #fff;
+  max-width: 55px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 3D Acrylic Glass Dice Dome */
+.acrylic-dome-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.acrylic-glass-dome {
+  width: 136px;
+  height: 50px;
+  background: radial-gradient(ellipse at 50% 30%, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.08) 50%, rgba(0, 0, 0, 0.5) 100%);
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  border-top-left-radius: 68px;
+  border-top-right-radius: 68px;
+  border-bottom: 3px solid #111;
+  box-shadow: inset 0 3px 8px rgba(255, 255, 255, 0.7), 0 4px 12px rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 2px 8px;
+}
+
+.dome-dice-slot {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dome-status-banner {
+  font-size: 10px;
+  font-weight: 900;
+  color: #2ecc71;
+  letter-spacing: 0.8px;
+  text-align: center;
+  margin-top: 1px;
+  text-transform: uppercase;
+}
+
+/* MAIN FELT BETTING GRID */
+.felt-betting-grid {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 2px 4px;
+  gap: 2px;
+  min-height: 0;
+}
+
+/* Generic Bet Cell */
+.touch-cell {
+  background: var(--cell-bg);
+  border: 1.5px solid var(--felt-border-solid);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  cursor: pointer;
+  padding: 2px 1px;
+  overflow: hidden;
+  transition: background 0.1s, transform 0.08s;
+}
+.touch-cell:active {
+  background: var(--cell-bg-hover);
+  transform: scale(0.97);
+}
+
+.touch-cell.winning {
+  background: rgba(255, 223, 70, 0.45) !important;
+  border-color: #fffb8f !important;
+  box-shadow: 0 0 10px rgba(255, 230, 80, 0.9), inset 0 0 8px rgba(255, 240, 100, 0.8) !important;
+  z-index: 5;
+}
+
+/* Placed Player Chip Badge with Player Name Inside */
+.touch-placed-chip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #c0392b;
+  color: #fff;
+  border: 1.5px dashed #fff;
+  border-radius: 12px;
+  padding: 1px 5px;
+  font-size: 9px;
+  font-weight: 900;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+  z-index: 10;
+  display: none;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+  pointer-events: none;
+  max-width: 95%;
+}
+.touch-placed-chip.active { display: inline-flex; }
+
+.touch-chip-name {
+  font-size: 8px;
+  text-transform: uppercase;
+  color: #ffd460;
+  max-width: 45px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ROW 1: SMALL / ANY TRIPLE / BIG (Arched Look Matching Table) */
+.grid-row-1 {
+  flex: 1.45;
+  display: grid;
+  grid-template-columns: 1.15fr 1.35fr 1.15fr;
+  gap: 3px;
+}
+
+.cell-small-hero {
+  border: 2px solid var(--felt-border-solid);
+  border-top-left-radius: 12px;
+  background: linear-gradient(180deg, rgba(14, 58, 36, 0.85) 0%, rgba(4, 22, 13, 0.85) 100%);
+}
+.cell-small-hero .cell-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.1;
+  letter-spacing: 1.5px;
+}
+.cell-small-hero .cell-sub {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--gold-bright);
+  margin-top: 3px;
+}
+.cell-small-hero .cell-triples-note {
+  font-size: 9px;
+  font-weight: 800;
+  color: #ff7675;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.cell-big-hero {
+  border: 2px solid var(--felt-border-solid);
+  border-top-right-radius: 12px;
+  background: linear-gradient(180deg, rgba(14, 58, 36, 0.85) 0%, rgba(4, 22, 13, 0.85) 100%);
+}
+.cell-big-hero .cell-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.1;
+  letter-spacing: 1.5px;
+}
+.cell-big-hero .cell-sub {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--gold-bright);
+  margin-top: 3px;
+}
+.cell-big-hero .cell-triples-note {
+  font-size: 9px;
+  font-weight: 800;
+  color: #ff7675;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* ANY TRIPLE (Authentic Diagonal Striped Pattern Matching Table) */
+.cell-any-triple-hero {
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0.38),
+    rgba(0, 0, 0, 0.38) 6px,
+    rgba(255, 255, 255, 0.04) 6px,
+    rgba(255, 255, 255, 0.04) 12px
+  );
+  border: 2px solid var(--gold-primary);
+  padding: 2px 4px;
+}
+.cell-any-triple-hero .any-title {
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--gold-bright);
+  letter-spacing: 0.8px;
+  line-height: 1.1;
+}
+.any-triple-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  margin: 3px auto;
+}
+.any-mini-pair {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  justify-content: center;
+}
+.cell-any-triple-hero .any-odds {
+  font-size: 13px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+}
+
+/* ROW 2, 3, 4: DOUBLES & TRIPLES (4 Columns x 3 Rows) */
+.doubles-triples-header {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  text-align: center;
+  font-size: 9.5px;
+  font-weight: 900;
+  color: #ffaa3b;
+  letter-spacing: 0.5px;
+  padding: 2px 0;
+  text-transform: uppercase;
+}
+
+.grid-row-doubles-triples {
+  flex: 3.3;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 2px;
+}
+
+.cell-double-box, .cell-triple-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 2px;
+}
+
+.dice-pair-horizontal {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+}
+
+.dice-trio-pyramid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.dice-trio-pyramid .pyramid-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dice-trio-pyramid .pyramid-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.cell-odds-tag {
+  font-size: 11.5px;
+  font-weight: 900;
+  color: var(--gold-bright);
+  line-height: 1;
+}
+
+/* ROW 5 & 6: TOTALS 4 TO 17 (7 Columns x 2 Rows) */
+.grid-row-totals {
+  flex: 1.9;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 2px;
+}
+.cell-total-box {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--felt-border-solid);
+}
+.cell-total-box .total-digit {
+  font-size: 19px;
+  font-weight: 900;
+  color: var(--gold-bright);
+  line-height: 1.1;
+}
+.cell-total-box .total-ratio {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: #8cb9a0;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+/* ROW 7: SINGLE NUMBERS 1 TO 6 */
+.singles-header-banner {
+  flex: 0 0 auto;
+  text-align: center;
+  font-size: 8.5px;
+  font-weight: 900;
+  color: #d4f0dc;
+  padding: 1px 0;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+.grid-row-singles {
+  flex: 1.25;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 2px;
+}
+.cell-single-box {
+  padding: 2px;
+}
+
+/* BOTTOM CONTROLS BAR */
+.bottom-control-panel {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  background: rgba(3, 16, 10, 0.96);
+  border-top: 2px solid var(--gold-primary);
+  padding: 2px 6px 4px 6px;
+  box-shadow: 0 -4px 14px rgba(0, 0, 0, 0.85);
+}
+
+.balance-wager-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1px 2px 2px 2px;
+  font-size: 11px;
+  font-weight: 800;
+}
+.stat-val-gold {
+  color: var(--gold-bright);
+  font-size: 13.5px;
+  font-weight: 900;
+}
+.btn-combos-drawer {
+  background: rgba(230, 184, 67, 0.18);
+  border: 1px solid var(--gold-primary);
+  color: var(--gold-bright);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 9.5px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.chips-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  margin-top: 1px;
+}
+
+.player-profile-tag {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 58px;
+}
+.player-avatar-circle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #27ae60, #16a085);
+  border: 1.5px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 11px;
+  color: #fff;
+}
+.player-tag-name {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: #fff;
+  max-width: 45px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chips-carousel {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.chips-carousel::-webkit-scrollbar { display: none; }
+
+.app-chip {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 10px;
+  cursor: pointer;
+  border: 2px dashed rgba(255, 255, 255, 0.85);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  flex-shrink: 0;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+.app-chip.active {
+  transform: scale(1.18);
+  border-style: solid;
+  border-color: #fff;
+  box-shadow: 0 0 10px var(--gold-bright), 0 3px 6px #000;
+  z-index: 5;
+}
+
+.app-chip.c-1 { background: #fff; color: #111; }
+.app-chip.c-5 { background: #e74c3c; color: #fff; }
+.app-chip.c-10 { background: #2980b9; color: #fff; }
+.app-chip.c-25 { background: #27ae60; color: #fff; }
+.app-chip.c-50 { background: #d35400; color: #fff; }
+.app-chip.c-100 { background: #2c3e50; color: #fff; border-color: var(--gold-primary); }
+.app-chip.c-500 { background: #8e44ad; color: #fff; border-color: #fff; }
+
+.action-icon-buttons {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.app-act-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  border-radius: 5px;
+  padding: 2px 4px;
+  font-size: 8.5px;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  gap: 2px;
+  min-width: 32px;
+  height: 32px;
+}
+.app-act-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.app-act-btn.clear { color: #ff8e8e; border-color: rgba(231, 76, 60, 0.5); }
+
+/* AUTHENTIC CASINO DICE RENDERING & PIPS (Identical to Table Display) */
+.dice-face {
+  background: radial-gradient(circle at 35% 30%, #fffdf4 0%, #ecdcb0 70%, #c4aa63 100%);
+  border: 1px solid #846726;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.9), 0 2px 4px rgba(0, 0, 0, 0.7);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  position: relative;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.dice-dome {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  padding: 2px;
+}
+.dice-single {
+  width: 25px;
+  height: 25px;
+  border-radius: 5px;
+  padding: 1.5px;
+}
+.dice-double {
+  width: 25px;
+  height: 25px;
+  border-radius: 4px;
+  padding: 1.5px;
+}
+.dice-triple-mobile {
+  width: 21px;
+  height: 21px;
+  border-radius: 4px;
+  padding: 1px;
+}
+.dice-mini {
+  width: 15px;
+  height: 15px;
+  border-radius: 3px;
+  padding: 0.8px;
+}
+
+.pip {
+  background: radial-gradient(circle at 35% 35%, #444 0%, #111 85%);
+  border-radius: 50%;
+  box-shadow: inset 0 0.5px 1px rgba(0, 0, 0, 0.9);
+  width: 72%;
+  height: 72%;
+  margin: auto;
+}
+.face-1 .pip.center {
+  background: radial-gradient(circle at 35% 35%, #ff3b30 0%, #b80d0d 85%);
+  width: 88%;
+  height: 88%;
+  box-shadow: inset 0 0.5px 1px rgba(0, 0, 0, 0.5), 0 0 4px rgba(255, 59, 48, 0.5);
+}
+
+.pip.top-left { grid-column: 1; grid-row: 1; }
+.pip.top-right { grid-column: 3; grid-row: 1; }
+.pip.middle-left { grid-column: 1; grid-row: 2; }
+.pip.center { grid-column: 2; grid-row: 2; }
+.pip.middle-right { grid-column: 3; grid-row: 2; }
+.pip.bottom-left { grid-column: 1; grid-row: 3; }
+.pip.bottom-right { grid-column: 3; grid-row: 3; }
+
+.dice-face.rolling {
+  animation: diceDomeTumble 0.12s infinite alternate ease-in-out;
+}
+@keyframes diceDomeTumble {
+  0% { transform: translateY(-3px) rotate(-16deg) scale(1.04); }
+  100% { transform: translateY(3px) rotate(18deg) scale(0.96); }
+}
+
+.die-settled {
+  animation: dieBounce 0.35s ease-out;
+}
+@keyframes dieBounce {
+  0% { transform: scale(1.22); }
+  50% { transform: scale(0.92); }
+  100% { transform: scale(1); }
+}
+
+/* Modals & Drawers */
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(3px);
+  z-index: 300;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+.modal-backdrop.open { display: flex; }
+
+.modal-sheet {
+  background: #08281a;
+  border-top: 3px solid var(--gold-primary);
+  border-radius: 14px 14px 0 0;
+  width: 100%;
+  max-width: 480px;
+  max-height: 80vh;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.9);
+}
+
+.sheet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.sheet-title {
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--gold-bright);
+}
+.close-btn {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.combos-drawer-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  overflow-y: auto;
+  max-height: 60vh;
+  padding: 2px;
+}
+.combo-drawer-item {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1.5px solid var(--felt-border-solid);
+  border-radius: 5px;
+  padding: 6px 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  gap: 3px;
+}
+
